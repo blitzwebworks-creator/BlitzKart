@@ -1,0 +1,8 @@
+"use client";
+import { useCart } from "@/components/cart-provider";
+import { availableStock, money, type Product } from "@/lib/types";
+
+export function ProductDetail({ product }: { product: Product }) {
+  const { add } = useCart(); const image = product.product_images?.[0]; const stock = availableStock(product);
+  return <div className="split" style={{ marginTop: 30 }}><div className="product-image" style={{ height: 370 }}>{image ? <img src={image.image_url} alt={image.alt_text || product.name}/> : <span>Image not available</span>}</div><div><div className="product-tag">{product.categories?.name}</div><h1 className="page-title" style={{ marginTop: 4 }}>{product.name}</h1><p className="muted">SKU: {product.sku}</p><div style={{ fontSize: 25, fontWeight: 750 }}>{money(product.selling_price)}{product.original_price && product.original_price > product.selling_price ? <span className="old-price">{money(product.original_price)}</span> : null}</div><p className="muted">{stock ? `${stock} available` : "Currently out of stock"}</p><button className="btn" disabled={!stock} onClick={() => add(product)}>{stock ? "Add to cart" : "Out of stock"}</button>{product.description ? <section className="section"><h2>About this product</h2><p>{product.description}</p></section> : null}{product.specifications && Object.keys(product.specifications).length ? <section className="section"><h2>Specifications</h2>{Object.entries(product.specifications).map(([key, value]) => <p key={key}><strong>{key}: </strong>{typeof value === "string" ? value : JSON.stringify(value)}</p>)}</section> : null}</div></div>;
+}
